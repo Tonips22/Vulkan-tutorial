@@ -7,12 +7,14 @@
 #include <cstring>
 #include <cstdlib>
 
+using namespace std;
+
 // Dimensiones de la ventana
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
 // Capas de validación
-const std::vector<const char*> validationLayers = {
+const vector<const char*> validationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
 
@@ -22,8 +24,11 @@ const bool enableValidationLayers = false;
 const bool enableValidationLayers = true;
 #endif
 
+// Funcion de devolución de llamada
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger) {
+    // Cargar función
     auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    // Comprobar si la función está disponible
     if (func != nullptr) {
         return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
     } else {
@@ -31,8 +36,11 @@ VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMes
     }
 }
 
+// Funciones de devolución de llamada
 void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+    // Cargar función
     auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    // Comprobar si la función está disponible
     if (func != nullptr) {
         func(instance, debugMessenger, pAllocator);
     }
@@ -103,7 +111,7 @@ private:
     void createInstance() {
         // Comprobar capas de validación
         if (enableValidationLayers && !checkValidationLayerSupport()) {
-            throw std::runtime_error("¡Capas de validación solictadas, pero no disponibles!");
+            throw runtime_error("¡Capas de validación solictadas, pero no disponibles!");
         }
 
         // Información de la aplicación
@@ -158,7 +166,7 @@ private:
 
         // Crear instancia
         if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create instance!");
+            throw runtime_error("failed to create instance!");
         }
     }
 
@@ -187,12 +195,12 @@ private:
 
         // Crear depurador
         if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-            throw std::runtime_error("Error al configurar el depurador!");
+            throw runtime_error("Error al configurar el depurador!");
         }
     }
 
     // Extensiones requeridas
-    std::vector<const char*> getRequiredExtensions() {
+    vector<const char*> getRequiredExtensions() {
         // Extensiones de GLFW
         uint32_t glfwExtensionCount = 0;
         // Extensiones de GLFW
@@ -201,7 +209,7 @@ private:
         glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
         // Extensiones requeridas
-        std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+        vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
         // Capas de validación
         if (enableValidationLayers) {
@@ -220,7 +228,7 @@ private:
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
 
         // Capas disponibles
-        std::vector<VkLayerProperties> availableLayers(layerCount);
+        vector<VkLayerProperties> availableLayers(layerCount);
         // Obtener capas
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
@@ -245,7 +253,7 @@ private:
 
     // Función de devolución de llamada
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
-        std::cerr << "capa de validación: " << pCallbackData->pMessage << std::endl;
+        cerr << "capa de validación: " << pCallbackData->pMessage << endl;
 
         return VK_FALSE;
     }
@@ -256,8 +264,8 @@ int main() {
 
     try {
         app.run();
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
+    } catch (const exception& e) {
+        cerr << e.what() << endl;
         return EXIT_FAILURE;
     }
 
